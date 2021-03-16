@@ -1,0 +1,18 @@
+---
+application:
+  name: "wechat"
+  project: "ub"
+  organization: "QoveryCommunity"
+databases:
+- type: "MYSQL"
+  name: "wechat-mysql"
+  version: "5"
+- type: "REDIS"
+  name: "wechat-redis"
+  version: "6"
+routers:
+- name: "main-wechat"
+  routes:
+  - application_name: "wechat"
+    paths:
+    - "/*"
