@@ -1047,6 +1047,7 @@ func main() {                                         //主函数入口
         log.Println("Connect to redis error", err)
         
 	}
+	log.Println("connected to redis:"+RedisDB)
 	defer redisconn.Close()
 /*
 	if _, err = redisconn.Do("AUTH", "Juju1234"); err != nil {

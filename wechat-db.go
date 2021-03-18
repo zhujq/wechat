@@ -135,6 +135,7 @@ func RefreshData() bool {
 		log.Println("error:", err)	
 		return false
 	}
+	log.Println("connected to mysql:"+Dbconn)
 	var addedVoiceCount,addedImageCount,addedVideoCount,addedNewsCount uint32 = 0,0,0,0
 
 	querysql := `select count(mediaid) from media where mediatype = "voice"`
@@ -275,7 +276,7 @@ func RefreshData() bool {
 
 func main() {    //主函数入口
 	Dbconn = os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_USERNAME") + ":"+os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_PASSWORD") + "@tcp(" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_HOST") + ":" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_PORT") + ")/" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_NAME")
-	if Dbconn == ""{
+	if os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_HOST") == ""{
     		Dbconn = "freedbtech_zhujq:Juju1234@tcp(freedb.tech:3306)/freedbtech_wechat"
 	}	
 	tick :=time.NewTicker( 24 * time.Hour)
