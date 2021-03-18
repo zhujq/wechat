@@ -1,9 +1,22 @@
+FROM golang:1.16-alpine3.13 as builder
+
+WORKDIR $GOPATH/src/wechat-go
+COPY . .
+
+RUN apk add --no-cache git && set -x && \
+    go mod init && go get -d -v
+RUN CGO_ENABLED=0 GOOS=linux go build -o /mywechat mywechat-main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /wechat-db wechat-db.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /wechat-index wechat-index.go
+
 FROM alpine:latest
 
+WORKDIR /
+COPY --from=builder /mywechat . 
+COPY --from=builder /wechat-db . 
+COPY --from=builder /wechat-index .
 ADD entrypoint.sh /entrypoint.sh
-ADD mywechat /mywechat
-ADD wechat-index /wechat-index
-ADD wechat-db /wechat-db
+
 RUN  chmod +x /mywechat && chmod +x /wechat-index && chmod +x /wechat-db  && chmod 777 /entrypoint.sh
 ENTRYPOINT  /entrypoint.sh 
 
