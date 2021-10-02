@@ -392,7 +392,7 @@ func PostJson(uri string, obj interface{}) ([]byte, error) {
 }
 
 func procRequest(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
+//	r.ParseForm()
 	if !validateUrl(w, r) {
 		log.Println("Wechat Service: this http request is not from Wechat platform!")
 		return
