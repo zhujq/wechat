@@ -208,16 +208,23 @@ func makeSignature(timestamp, nonce string) string {
 }
 
 func validateUrl(w http.ResponseWriter, r *http.Request) bool {
-	timestamp := strings.Join(r.Form["timestamp"], "")
-	nonce := strings.Join(r.Form["nonce"], "")
+
+	queryForm, _ := url.ParseQuery(r.URL.RawQuery)
+	timestamp := queryForm["timestamp"][0]
+	nonce := queryForm["nonce"][0]
+//	timestamp := strings.Join(r.Form["timestamp"], "")
+//	nonce := strings.Join(r.Form["nonce"], "")
 	signatureGen := makeSignature(timestamp, nonce)
 
-	signatureIn := strings.Join(r.Form["signature"], "")
+//	signatureIn := strings.Join(r.Form["signature"], "")
+	signatureIn := queryForm["signature"][0]
+
 	if signatureGen != signatureIn {
 		return false
 	}
 	log.Println("signature check pass!")                        //日志记录签名通过
-	echostr := strings.Join(r.Form["echostr"], "")
+//	echostr := strings.Join(r.Form["echostr"], "")
+	echostr := queryForm["echostr"][0]
 	fmt.Fprintf(w, echostr)                                    //echostr作为body返回给微信公众服务器，只在接入鉴权时带echostr
 	return true
 }
