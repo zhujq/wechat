@@ -209,7 +209,13 @@ func makeSignature(timestamp, nonce string) string {
 
 func validateUrl(w http.ResponseWriter, r *http.Request) bool {
 
-	queryForm, _ := url.ParseQuery(r.URL.RawQuery)
+	queryForm, err := url.ParseQuery(r.URL.RawQuery)
+	if err ==  nil {
+		return false
+	}
+	if len(queryForm["signature"]) == 0{
+		return false
+	}
 	timestamp := queryForm["timestamp"][0]
 	nonce := queryForm["nonce"][0]
 //	timestamp := strings.Join(r.Form["timestamp"], "")
