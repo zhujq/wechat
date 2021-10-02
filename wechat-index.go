@@ -82,7 +82,11 @@ func main() {
 
 	Dbconn = os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_USERNAME") + ":"+os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_PASSWORD") + "@tcp(" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_HOST") + ":" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_PORT") + ")/" + os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_NAME")
 	if os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_HOST") == ""{
-    		Dbconn = "freedbtech_zhujq:Juju1234@tcp(freedb.tech:3306)/freedbtech_wechat"
+		if os.Getenv("MYSQLHOST")!=""{
+			Dbconn = os.Getenv("MYSQLUSER") + ":"+os.Getenv("MYSQLPASSWORD") + "@tcp(" + os.Getenv("MYSQLHOST") + ":" + os.Getenv("MYSQLPORTT") + ")/" + os.Getenv("MYSQLDATABASE")
+		}else{
+    		Dbconn = "zhujq:Juju1234@tcp(token.zhujq.ga:3306)/wechat"
+		}
 	}	
 
 	db, err = sql.Open("mysql",Dbconn)
