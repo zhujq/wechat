@@ -279,12 +279,12 @@ func main() {    //主函数入口
 	
 	if os.Getenv("QOVERY_DATABASE_WECHAT_MYSQL_HOST") == ""{
 		if os.Getenv("MYSQLHOST")!=""{
-			Dbconn = os.Getenv("MYSQLUSER") + ":"+os.Getenv("MYSQLPASSWORD") + "@tcp(" + os.Getenv("MYSQLHOST") + ":" + os.Getenv("MYSQLPORTT") + ")/" + os.Getenv("MYSQLDATABASE")
+			Dbconn = os.Getenv("MYSQLUSER") + ":"+os.Getenv("MYSQLPASSWORD") + "@tcp(" + os.Getenv("MYSQLHOST") + ":" + os.Getenv("MYSQLPORT") + ")/" + os.Getenv("MYSQLDATABASE")
 		}else{
     		Dbconn = "zhujq:Juju1234@tcp(token.zhujq.ga:3306)/wechat"
 		}
 	}	
-	
+
 	tick :=time.NewTicker( 24 * time.Hour)
 	defer tick.Stop()
 	RefreshData() 
