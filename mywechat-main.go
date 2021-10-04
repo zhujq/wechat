@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/xml"
 	"encoding/json"
-	"github.com/bitly/go-simplejson"
+//	"github.com/bitly/go-simplejson"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -37,7 +37,7 @@ const GetIndexUrl = "http://127.0.0.1:8080/?keyword="
 //const GetIndexUrl = "https://wechat-index-wechat-zhujq.cloud.okteto.net/?keyword=" 把index放在同一个docker中部署
 const WelcomeMsg =  "谢谢您的关注！[微笑]\n      “一只猪一世界”个人公众号主要用来记录本人体验这大千世界的所见、所听、所想、所思，内容完善中，您可以输入 help 或 帮助 获得使用帮助，输入about me 或 关于我 获得本公众号的详细说明，也可以任意输入看看有没好玩的。\n       由于本公众号是个人性质的订阅号，腾讯公司只赋予非常有限的权限，只能进行你问我答式的消息回复，回复的内容是有且只有一条文本（或图片或视频或图文）。\n       特别说明：本公众号后端搭建涉及的所有硬件、软件以及公众号呈现的内容均与本人所供职的公司（Z公司）无关，也无任何涉及Z公司知识产权或商业机密的内容呈现!\n       Best Wishes!\n                                                Zhujq [猪头]"
 const GetIpinfoUrl = "http://ip-api.com/json/"
-const GetInntelnuminfoUrl ="http://mobsec-dianhua.baidu.com/dianhua_api/open/location?tel="
+const GetInntelnuminfoUrl ="https://phone-zhujq.cloud.okteto.net/?phonenum="
 const GetOuttelnuminfoUrl ="https://api.veriphone.io/v2/verify?key=0F0466BD7808436AB6F68930B8324802&phone="
 const GetHeadnewsUrl = "https://api.isoyu.com/api/News/banner"
 const CommMsg = "找不到什么东东回你了......"
@@ -138,8 +138,13 @@ type ResIpinfoBody struct {
 }
 
 type ResInnertelephoneinfoBody struct {
-	Status int
-	Location string 
+	Status      string `json:"status"`
+	PhoneNum   string `json:"PhoneNum"`
+	Province     string `json:"Province"`
+	City   string `json:"City "`
+	ZipCode    string `json:"ZipCode"`
+	AreaZone string `json:"AreaZone"`
+	CardType string `json:"CardType"` 
 }
 
 type ResOuttelephoneinfoBody struct {
@@ -761,15 +766,17 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 
 			var teleinfo ResInnertelephoneinfoBody
 			gettingnum := textRequestBody.Content
+			msg := ""
 			
 			if strings.HasPrefix(textRequestBody.Content,"86") {
 				gettingnum = strings.TrimPrefix(textRequestBody.Content,"86")
 			}
 
-			buff, _ := HTTPGet(GetInntelnuminfoUrl+gettingnum)                         //用baidu提供的号码归属地查询接口
-			js, _ := simplejson.NewJson(buff)
+			teleinfo.Status = "fail"
+			buff, _ := HTTPGet(GetInntelnuminfoUrl+gettingnum)                         //用自建的号码归属地查询接口
+	//		js, _ := simplejson.NewJson(buff)
 			
-			teleinfo.Status = js.Get("responseHeader").Get("status").MustInt()
+	/*		teleinfo.Status = js.Get("responseHeader").Get("status").MustInt()
 			teleinfo.Location = js.Get("response").Get(gettingnum).Get("location").MustString()
 
 			if teleinfo.Status == 200 && teleinfo.Location != ""{
@@ -784,7 +791,19 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 				return
 
 			}
-			
+			*/
+			json.Unmarshal(buff,&teleinfo)
+			if teleinfo.Status == "success" {
+				msg = emoji.Parse(":telephone_receiver:") + "号码"+textRequestBody.Content +"的信息： \n"+ "归属地：" + teleinfo.Province  + teleinfo.City + "(" + teleinfo.AreaZone  + ")" + "\n运营商：" + teleinfo.CardType
+			}else{
+				msg = "查询失败，可能是未知号码或者新放号段数据库还没更新"
+			}
+
+			responseBody, _ = makeTextResponseBody(textRequestBody.ToUserName,textRequestBody.FromUserName,msg)
+			w.Header().Set("Content-Type", "text/xml")
+			fmt.Fprintf(w, string(responseBody))
+			return
+
 		}
 	}
 
