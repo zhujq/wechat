@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/xml"
 	"encoding/json"
-//	"github.com/bitly/go-simplejson"
+	"github.com/bitly/go-simplejson"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -39,7 +39,7 @@ const WelcomeMsg =  "谢谢您的关注！[微笑]\n      “一只猪一世界�
 const GetIpinfoUrl = "http://ip-api.com/json/"
 const GetInntelnuminfoUrl ="https://phone-zhujq.cloud.okteto.net/?phonenum="
 const GetOuttelnuminfoUrl ="https://api.veriphone.io/v2/verify?key=0F0466BD7808436AB6F68930B8324802&phone="
-const GetHeadnewsUrl = "https://api.isoyu.com/api/News/banner"
+const GetHeadnewsUrl = "https://c.m.163.com/nc/article/headline/T1348647853363/0-10.html"
 const CommMsg = "找不到什么东东回你了......"
 const GetEntocnUrl = "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i="
 //const RedisDB = "wechat-redis:6379"
@@ -591,13 +591,45 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	} 
 
-	if textRequestBody.Content == "给我一条新闻" || textRequestBody.Content == "给我新闻" || textRequestBody.Content == "give me a news"{
+	if textRequestBody.Content == "给我一条新闻" || textRequestBody.Content == "给我新闻" || textRequestBody.Content == "give me a news" || textRequestBody.Content == "news" || textRequestBody.Content == "新闻"{
 
-		var newsinfo HeadnewsinfoBody
+/*		var newsinfo HeadnewsinfoBody
 		buff, _ := HTTPGet(GetHeadnewsUrl)
 		json.Unmarshal(buff,&newsinfo)
 		msg := emoji.Parse(":newspaper:") + newsinfo.Source + "：" + newsinfo.Title 
-		log.Println(msg)
+*/
+//		log.Println(msg)
+		msg := ""
+		buff, err := HTTPGet(GetHeadnewsUrl)
+		if err != nil {
+			log.Println("error:", err.Error())
+			msg = "查询新闻失败了...或者等会再查吧"
+		}else{
+			js, err := simplejson.NewJson([]byte(buff))
+			if err != nil {
+				log.Println("error:", err.Error())
+				msg = "解析新闻失败了...或者等会再查吧"
+			}else{
+					rows,err :=  js.Get("T1348647853363").Array()
+					if err != nil {
+						log.Println("error:", err.Error())
+						msg = "解析新闻失败了...或者等会再查吧"
+					}else{
+							msg += (emoji.Parse(":newspaper:") +"小猪猪为您播报以下热点新闻：\n")
+							i := 0
+							for  range rows {
+								msg += emoji.Parse(":newspaper_roll:")
+								msg += js.Get("T1348647853363").GetIndex(i).Get("title").MustString()
+								msg += ("(来自于"+js.Get("T1348647853363").GetIndex(i).Get("source").MustString() + ")\n")	
+								i++
+								if len(msg) > 1800{      //微信公众号回文本消息限制在2048字节大小
+									break
+								}
+							}
+					}
+			}
+		}
+	//	log.Println(msg)
 		responseBody, _ = makeTextResponseBody(textRequestBody.ToUserName,textRequestBody.FromUserName,msg)
 		w.Header().Set("Content-Type", "text/xml")
 		fmt.Fprintf(w, string(responseBody))
