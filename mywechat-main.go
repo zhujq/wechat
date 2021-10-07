@@ -618,12 +618,14 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 							msg += (emoji.Parse(":newspaper:") +"小猪猪为您播报以下热点新闻：\n")
 							i := 0
 							for  range rows {
-								msg += emoji.Parse(":newspaper_roll:")
-								msg += js.Get("T1348647853363").GetIndex(i).Get("title").MustString()
-								msg += ("("+js.Get("T1348647853363").GetIndex(i).Get("source").MustString() + ")：\n")
-								msg += (js.Get("T1348647853363").GetIndex(i).Get("digest").MustString() + "\n")
+								tempstr := emoji.Parse(":newspaper_roll:")
+								tempstr += js.Get("T1348647853363").GetIndex(i).Get("title").MustString()
+								tempstr += ("("+js.Get("T1348647853363").GetIndex(i).Get("source").MustString() + ")：\n")
+								tempstr += (js.Get("T1348647853363").GetIndex(i).Get("digest").MustString() + "\n")
 								i++
-								if len(msg) > 1800{      //微信公众号回文本消息限制在2048字节大小
+								if len(msg)+len(tempstr) < 2048{      //微信公众号回文本消息限制在2048字节大小
+									msg += tempstr
+								}else{
 									break
 								}
 							}
