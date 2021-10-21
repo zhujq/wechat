@@ -89,6 +89,8 @@ func main() {
 		}
 	}	
 
+	Dbconn += "?tls=preferred"        //2021-10-21 默认mysql ssl连接
+
 	db, err = sql.Open("mysql",Dbconn)
 	db.SetConnMaxLifetime(0)
 	defer db.Close()

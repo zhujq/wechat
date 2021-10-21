@@ -285,6 +285,8 @@ func main() {    //主函数入口
 		}
 	}	
 
+	Dbconn += "?tls=preferred"        //2021-10-21 默认mysql ssl连接
+
 	tick :=time.NewTicker( 24 * time.Hour)
 	defer tick.Stop()
 	RefreshData() 
