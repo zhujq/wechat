@@ -398,6 +398,13 @@ func PostJson(uri string, obj interface{}) ([]byte, error) {
 
 func procRequest(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
+	if r.Method == "GET" && r.URL.Path == "/healthck"{  //负载均衡器的定期健康检查
+		w.Header().Set("Content-Type", "text/html")
+		log.Println("Get Health check,replying")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, string("ok"))
+		return
+	}
 	if !validateUrl(w, r) {
 		log.Println("Wechat Service: this http request is not from Wechat platform!")
 		return
