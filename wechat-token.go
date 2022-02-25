@@ -1,18 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
-	"os"
-	"encoding/json"
 	"io/ioutil"
-	"strconv"
-	"time"
+	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
-	"github.com/tidwall/buntdb"
+	"time"
+
 	"github.com/devfeel/dotweb"
+	"github.com/tidwall/buntdb"
 )
 
 const AccessTokenAPI = "https://api.weixin.qq.com/cgi-bin/token"
@@ -170,36 +171,34 @@ func tokenHandler(ctx dotweb.Context) error {
 func InitRoute(server *dotweb.HttpServer) {
 	// 定义Basic Auth的用户名和密码用来防止接口被恶意访问
 
-
 	server.GET("/token", tokenHandler)
 }
 
 // 获取AppID的access_token
 func (t *Token) Get(appid string, secret string) string {
-	
-	requestLine := strings.Join([]string{AccessTokenAPI,"?grant_type=client_credential&appid=",appid,"&secret=",secret}, "")
-	
+
+	requestLine := strings.Join([]string{AccessTokenAPI, "?grant_type=client_credential&appid=", appid, "&secret=", secret}, "")
+
 	resp, err := http.Get(requestLine)
 	//	res, _ := grequests.Get(AccessTokenAPI, ro)
-	
+
 	if err != nil || resp.StatusCode != http.StatusOK {
 		return ""
 	}
-	
+
 	defer resp.Body.Close()
-	
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return ""
 	}
-	
+
 	if err := json.Unmarshal(body, t); err != nil {
 		return ""
 	}
-	
+
 	return string(body)
 }
-	
 
 var app = NewApp()
 
@@ -209,7 +208,7 @@ func main() {
 	var (
 		version = flag.Bool("version", false, "version v1.0")
 		config  = flag.String("config", "account.json", "config file.")
-		port    = flag.Int("port", 1080, "listen port.")
+		port    = flag.Int("port", 8880, "listen port.")
 	)
 
 	flag.Parse()
