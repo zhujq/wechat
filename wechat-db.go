@@ -134,7 +134,7 @@ func RefreshData() bool {
 	defer db.Close()
 	err = db.Ping()
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("connect mysql error:", err)
 		return false
 	}
 	log.Println("connected to mysql:" + Dbconn)
@@ -149,7 +149,7 @@ func RefreshData() bool {
 	querysql = `select count(mediaid) from media where mediatype = "news"`
 	err = db.QueryRow(querysql).Scan(&addedNewsCount)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("read mysql error:", err)
 		return false
 	}
 
@@ -157,20 +157,20 @@ func RefreshData() bool {
 	var t Token
 	err = json.Unmarshal(buff, &t)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("get token error:", err)
 		return false
 	}
 
 	buff, err = HTTPGet(GetMaterialSum + t.AccessToken)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("get material error:", err)
 		return false
 	}
 
 	var mc MediaCount
 	err = json.Unmarshal(buff, &mc)
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("get material error:", err)
 		return false
 	}
 
@@ -189,7 +189,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("error:", err)
+				log.Println("insert voice error:", err)
 				return false
 			}
 
@@ -211,7 +211,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("error:", err)
+				log.Println("insert image error:", err)
 				return false
 			}
 
@@ -233,7 +233,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("error:", err)
+				log.Println("insert video error:", err)
 				return false
 			}
 			var requestm RequestMedia
@@ -266,7 +266,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("error:", err)
+				log.Println("insert news error:", err)
 				return false
 			}
 		}
