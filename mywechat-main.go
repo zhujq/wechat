@@ -491,7 +491,7 @@ func procRequest(w http.ResponseWriter, r *http.Request) {
 	_, err := redisconn.Do("lpush", textRequestBody.FromUserName, textRequestBody.Content) //记录用户输入的信息
 
 	if err != nil { //有可能redis连接断了，重新连接
-		log.Println("Error to connnect redis,re-connect....")
+		log.Println("wechat Error to connnect redis,re-connect....")
 
 		redisconn, err = redis.Dial("tcp", RedisDB, redis.DialKeepAlive(time.Hour*48), redis.DialPassword(RedisPWD)) //连接redis数据库，记录用户文本记录和预处理
 		if err != nil {                                                                                              //如果无法连接redis数据库，不返回继续处理
@@ -1118,7 +1118,7 @@ func main() { //主函数入口
 	}
 	redisconn, err = redis.Dial("tcp", RedisDB, redis.DialKeepAlive(time.Hour*48), redis.DialPassword(RedisPWD)) //连接redis数据库，记录用户文本记录和预处理
 	if err != nil {                                                                                              //如果无法连接redis数据库，不返回继续处理
-		log.Println("Connect to redis error", err)
+		log.Println("wechat Connect to redis error", err)
 
 	}
 	log.Println("connected to redis:" + RedisDB)

@@ -134,10 +134,10 @@ func RefreshData() bool {
 	defer db.Close()
 	err = db.Ping()
 	if err != nil {
-		log.Println("connect mysql error:", err)
+		log.Println("wechat-db connect mysql error:", err)
 		return false
 	}
-	log.Println("connected to mysql:" + Dbconn)
+	log.Println("wechat-db connected to mysql:" + Dbconn)
 	var addedVoiceCount, addedImageCount, addedVideoCount, addedNewsCount uint32 = 0, 0, 0, 0
 
 	querysql := `select count(mediaid) from media where mediatype = "voice"`
@@ -149,7 +149,7 @@ func RefreshData() bool {
 	querysql = `select count(mediaid) from media where mediatype = "news"`
 	err = db.QueryRow(querysql).Scan(&addedNewsCount)
 	if err != nil {
-		log.Println("read mysql error:", err)
+		log.Println("wechat-db read mysql error:", err)
 		return false
 	}
 
@@ -157,20 +157,20 @@ func RefreshData() bool {
 	var t Token
 	err = json.Unmarshal(buff, &t)
 	if err != nil {
-		log.Println("get token error:", err)
+		log.Println("wechat-db get token error:", err)
 		return false
 	}
 
 	buff, err = HTTPGet(GetMaterialSum + t.AccessToken)
 	if err != nil {
-		log.Println("get material error:", err)
+		log.Println("wechat-db get material error:", err)
 		return false
 	}
 
 	var mc MediaCount
 	err = json.Unmarshal(buff, &mc)
 	if err != nil {
-		log.Println("get material error:", err)
+		log.Println("wechat-db get material error:", err)
 		return false
 	}
 
@@ -189,7 +189,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("insert voice error:", err)
+				log.Println("wechat-db insert voice error:", err)
 				return false
 			}
 
@@ -211,7 +211,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("insert image error:", err)
+				log.Println("wechat-db insert image error:", err)
 				return false
 			}
 
@@ -233,7 +233,7 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("insert video error:", err)
+				log.Println("wechat-db insert video error:", err)
 				return false
 			}
 			var requestm RequestMedia
@@ -266,13 +266,13 @@ func RefreshData() bool {
 			log.Println(insertsql)
 			_, err = db.Exec(insertsql)
 			if err != nil {
-				log.Println("insert news error:", err)
+				log.Println("wechat-db insert news error:", err)
 				return false
 			}
 		}
 	}
 
-	log.Println("Refresh Success", (mc.VoiceCount - addedVoiceCount), (mc.ImageCount - addedImageCount), (mc.VideoCount - addedVideoCount), (mc.NewsCount - addedNewsCount))
+	log.Println("wechat-db Refresh Success", (mc.VoiceCount - addedVoiceCount), (mc.ImageCount - addedImageCount), (mc.VideoCount - addedVideoCount), (mc.NewsCount - addedNewsCount))
 	return true
 }
 

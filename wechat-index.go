@@ -98,7 +98,7 @@ func main() {
 	defer db.Close()
 	err = db.Ping()
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("wechat-index conn to mysql error:", err)
 		return
 	}
 
@@ -122,7 +122,7 @@ func indexHandler(ctx dotweb.Context) error {
 	}
 
 	if keyword == "" {
-		log.Println("ERROR: 没有提供keyword")
+		log.Println("wechat-index ERROR: 没有提供keyword")
 		return ctx.WriteJsonC(http.StatusNotFound, message)
 	}
 
@@ -186,12 +186,12 @@ func indexHandler(ctx dotweb.Context) error {
 	row, err := db.Query(sqlstr)
 	defer row.Close()
 	if err != nil {
-		log.Println("error:", err)
+		log.Println("wechat-index error:", err)
 		return ctx.WriteJsonC(http.StatusNotFound, message)
 	}
 
 	if err = row.Err(); err != nil {
-		log.Println("error:", err)
+		log.Println("wechat-index error:", err)
 		return ctx.WriteJsonC(http.StatusNotFound, message)
 	}
 
@@ -199,13 +199,13 @@ func indexHandler(ctx dotweb.Context) error {
 	for row.Next() {
 		if querytype == "default" {
 			if err := row.Scan(&message.Mediatype, &message.Mediaid, &message.Mediatitle, &message.Mediaurl, &message.Mediadigest, &message.Mediathumb); err != nil {
-				log.Println("error:", err)
+				log.Println("wechat-index error:", err)
 				return ctx.WriteJsonC(http.StatusNotFound, message)
 			}
 		}
 		if querytype == "poem" {
 			if err := row.Scan(&message.Mediadigest); err != nil {
-				log.Println("error:", err)
+				log.Println("wechat-index error:", err)
 				return ctx.WriteJsonC(http.StatusNotFound, message)
 			}
 			message.Mediatype = "poem"
