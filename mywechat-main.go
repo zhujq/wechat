@@ -30,7 +30,7 @@ const (
 	token = "wechat4go"
 )
 
-const GetTokenUrl = "http://token.zhujq.ga:8880/token?appid=wxf183d5e1fe4d5204"
+const GetTokenUrl = "http://token.zhujq.tk:8880/token?appid=wxf183d5e1fe4d5204"
 const GetMaterialSum = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token="
 const GetMaterial = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token="
 const GetMediainfo = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token="
