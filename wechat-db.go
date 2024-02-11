@@ -15,15 +15,15 @@ import (
 	//	"io"
 )
 
-const GetTokenUrl = "http://token.zhujq.tk:8880/token?appid=wxf183d5e1fe4d5204"
+const GetTokenUrl = "http://token.19790526.xyz:8880/token?appid=wxf183d5e1fe4d5204"
 
 const GetMaterialSum = "https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token="
 const GetMaterial = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token="
 
-//const Dbconn = "freedbtech_zhujq:Juju1234@tcp(freedb.tech:3306)/freedbtech_wechat"
+// const Dbconn = "freedbtech_zhujq:Juju1234@tcp(freedb.tech:3306)/freedbtech_wechat"
 var Dbconn string
 
-//const Dbconn = "zhujq:Juju1234@tcp(wechat-mysql:3306)/wechat"
+// const Dbconn = "zhujq:Juju1234@tcp(wechat-mysql:3306)/wechat"
 const GetMediainfo = "https://api.weixin.qq.com/cgi-bin/material/get_material?access_token="
 
 type RequestMaterial struct {
@@ -108,7 +108,7 @@ func HTTPGet(uri string) ([]byte, error) {
 	return ioutil.ReadAll(response.Body)
 }
 
-//PostJSON post json 数据请求
+// PostJSON post json 数据请求
 func PostJson(uri string, obj interface{}) ([]byte, error) {
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
