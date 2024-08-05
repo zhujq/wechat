@@ -1113,8 +1113,8 @@ func main() { //主函数入口
 		RedisDB = os.Getenv("REDISHOST") + ":" + os.Getenv("REDISPORT")
 		RedisPWD = os.Getenv("REDISPASSWORD")
 	} else {
-		RedisDB = "redis-12069.c1.us-east1-2.gce.cloud.redislabs.com:12069"
-		RedisPWD = "Juju1234"
+		RedisDB = "master.wechat-redis--ubwechat--udm2-xcby.addon.code.run:6379"
+		RedisPWD = "bd52068ef1db6811d9f94c42c2f670cb"
 	}
 	redisconn, err = redis.Dial("tcp", RedisDB, redis.DialKeepAlive(time.Hour*48), redis.DialPassword(RedisPWD)) //连接redis数据库，记录用户文本记录和预处理
 	if err != nil {                                                                                              //如果无法连接redis数据库，不返回继续处理
