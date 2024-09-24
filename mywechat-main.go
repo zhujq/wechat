@@ -1116,8 +1116,8 @@ func main() { //主函数入口
 		RedisDB = "master.wechat-redis--ubwechat--udm2-xcby.addon.code.run:6379"
 		RedisPWD = "bd52068ef1db6811d9f94c42c2f670cb"
 	}
-	redisconn, err = redis.Dial("tcp", RedisDB, redis.DialKeepAlive(time.Hour*48), redis.DialPassword(RedisPWD)) //连接redis数据库，记录用户文本记录和预处理
-	if err != nil {                                                                                              //如果无法连接redis数据库，不返回继续处理
+	redisconn, err = redis.Dial("tcp", RedisDB, redis.DialKeepAlive(time.Hour*48), redis.DialPassword(RedisPWD), redis.DialUseTLS(true)) //连接redis数据库，记录用户文本记录和预处理
+	if err != nil {                                                                                                                      //如果无法连接redis数据库，不返回继续处理
 		log.Println("wechat Connect to redis error", err)
 
 	}
